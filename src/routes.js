@@ -15,14 +15,14 @@ function AppRoutes() {
     <Routes>
       <Route
         path="/login"
-        element={!user ? <Login /> : <Navigate to={user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/user-dashboard'} />}
+        element={!user ? <Login /> : <Navigate to={user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/home'} />}
       />
       <Route
         path="/register"
-        element={!user ? <Register /> : <Navigate to={user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/user-dashboard'} />}
+        element={!user ? <Register /> : <Navigate to={user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/home'} />}
       />
       <Route
-        path="/home"
+        path="/login"
         element={user ? <Home /> : <Navigate to="/login" />}
       />
       <Route
@@ -30,7 +30,7 @@ function AppRoutes() {
         element={user ? <ChangePassword /> : <Navigate to="/login" />}
       />
       <Route
-        path="/user-dashboard"
+        path="/home"
         element={user ? <UserDashboard /> : <Navigate to="/login" />}
       />
       <Route

@@ -16,10 +16,8 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Dados enviados:', form);
     try {
       const res = await login(form);
-      console.log('Resposta da API:', res.data);
       const { token, id, name, email, cpf, profile, firstLogin } = res.data;
 
       const user = {
@@ -37,9 +35,9 @@ function Login() {
       if (profile === 'ADMINISTRADOR') {
         navigate('/admin/users');
       } else if (profile === 'USUÁRIO') {
-        navigate('/user-dashboard');
-      } else {
         navigate('/home');
+      } else {
+        navigate('/login');
       }
     } catch (err) {
       console.error('Erro da API:', err.response);

@@ -14,7 +14,6 @@ function AdminUsers() {
     const fetchUsers = async () => {
       try {
         const res = await getAllUsers();
-        console.log('Resposta de /user/all:', res.data);
         setUsers(res.data);
       } catch (err) {
         console.error('Erro ao buscar usuários:', err.response);

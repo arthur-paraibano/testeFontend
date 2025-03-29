@@ -11,8 +11,6 @@ function UserDashboard() {
     navigate('/login');
   };
 
-  console.log('Renderizando UserDashboard com:', { user });
-
   return (
     <div className="user-dashboard-container">
       <h2>Hola Mundo!</h2>

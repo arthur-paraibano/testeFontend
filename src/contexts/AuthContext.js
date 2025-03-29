@@ -20,7 +20,6 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
 
   const login = (userData, jwtToken) => {
-    console.log('Chamando login com:', { userData, jwtToken });
     setUser(userData);
     setToken(jwtToken);
     localStorage.setItem('user', JSON.stringify(userData));
@@ -28,7 +27,6 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    console.log('Chamando logout');
     setUser(null);
     setToken(null);
     localStorage.removeItem('user');
@@ -36,8 +34,6 @@ export function AuthProvider({ children }) {
   };
 
   const value = useMemo(() => ({ user, token, login, logout }), [user, token]);
-
-  console.log('Renderizando AuthProvider com:', { user, token });
 
   return (
     <AuthContext.Provider value={value}>
