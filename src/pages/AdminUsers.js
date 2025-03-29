@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getAllUsers } from '../services/api';
+import { deleteUser, getAllUsers } from '../services/api';
 import '../styles/AdminUsers.css';
 
 function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +22,23 @@ function AdminUsers() {
       }
     };
     fetchUsers();
-  }, []); // Array de dependências vazio para rodar apenas uma vez ao montar o componente
+  }, []);
+
+  const handleDelete = async (id) => {
+    if (id === user.id) {
+      setError('Você não pode excluir o usuário atualmente logado.');
+      return;
+    }
+
+    try {
+      await deleteUser(id); // Chama o endpoint /user/delete com o id
+      setUsers(users.filter((u) => u.id !== id)); // Remove o usuário da lista localmente
+      setError(''); // Limpa qualquer erro anterior
+    } catch (err) {
+      console.error('Erro ao excluir usuário:', err.response);
+      setError('Erro ao excluir usuário.');
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -38,15 +54,27 @@ function AdminUsers() {
           <tr>
             <th>Nome</th>
             <th>E-mail</th>
+            <th>Perfil</th>
             <th>CPF</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.cpf}</td>
+          {users.map((u) => (
+            <tr key={u.id}>
+              <td>{u.name}</td>
+              <td>{u.email}</td>
+              <td>{u.profile}</td>
+              <td>{u.cpf}</td>
+              <td>
+                <button
+                  onClick={() => handleDelete(u.id)}
+                  className="btn-delete"
+                  disabled={u.id === user.id} // Desativa o botão para o usuário logado
+                >
+                  X
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -20,6 +20,6 @@ export const updateUser = (data) => api.put('/user/update', data);
 export const updatePassword = (data) => api.put('/user/update-password', data);
 export const getUserById = (id) => api.post(`/user/id`, { id });
 export const getAllUsers = () => api.get('/user/all');
-export const deleteUser = (id) => api.delete(`/user/delete?id=${id}`);
+export const deleteUser = (id) => api.delete('/user/delete', { data: { id } });
 
 export default api;
