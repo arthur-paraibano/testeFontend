@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import AdminUsers from './pages/AdminUsers';
 import ChangePassword from './pages/ChangePassword';
+import ChangePasswordFirstLogin from './pages/ChangePasswordFirstLogin';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -13,16 +14,27 @@ function AppRoutes() {
 
   return (
     <Routes>
+      {/* Rota de login sempre acessível se não autenticado */}
       <Route
         path="/login"
-        element={!user ? <Login /> : <Navigate to={user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/home'} />}
+        element={!user ? <Login /> : <Navigate to={user.firstLogin ? '/change-password-first' : user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/user-dashboard'} />}
+      />
+
+      {/* Rotas restritas apenas para usuários autenticados */}
+      <Route
+        path="/change-password-first"
+        element={user ? <ChangePasswordFirstLogin /> : <Navigate to="/login" />}
       />
       <Route
-        path="/register"
-        element={!user ? <Register /> : <Navigate to={user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/home'} />}
+        path="/user-dashboard"
+        element={user && user.profile === 'USUÁRIO' ? <UserDashboard /> : <Navigate to="/login" />}
       />
       <Route
-        path="/login"
+        path="/admin/users"
+        element={user && user.profile === 'ADMINISTRADOR' ? <AdminUsers /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/home"
         element={user ? <Home /> : <Navigate to="/login" />}
       />
       <Route
@@ -30,14 +42,12 @@ function AppRoutes() {
         element={user ? <ChangePassword /> : <Navigate to="/login" />}
       />
       <Route
-        path="/home"
-        element={user ? <UserDashboard /> : <Navigate to="/login" />}
+        path="/register"
+        element={!user ? <Register /> : <Navigate to={user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/user-dashboard'} />}
       />
-      <Route
-        path="/admin/users"
-        element={user ? <AdminUsers /> : <Navigate to="/login" />}
-      />
-      <Route path="/" element={<Navigate to="/login" />} />
+
+      {/* Redireciona qualquer outra rota para /login se não autenticado */}
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 }

@@ -20,6 +20,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
 
   const login = (userData, jwtToken) => {
+
     setUser(userData);
     setToken(jwtToken);
     localStorage.setItem('user', JSON.stringify(userData));

@@ -31,13 +31,15 @@ function Login() {
 
       loginContext(user, token);
 
-      // Redireciona com base no profile
-      if (profile === 'ADMINISTRADOR') {
+      // Verifica se é o primeiro login
+      if (firstLogin === true) {
+        navigate('/change-password-first', { replace: true }); // Usa replace para evitar loops
+      } else if (profile === 'ADMINISTRADOR') {
         navigate('/admin/users');
       } else if (profile === 'USUÁRIO') {
-        navigate('/home');
+        navigate('/user-dashboard');
       } else {
-        navigate('/login');
+        navigate('/home');
       }
     } catch (err) {
       console.error('Erro da API:', err.response);
