@@ -1,22 +1,47 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // { id, name, email, cpf, role }
+  const parseLocalStorage = (key, defaultValue) => {
+    const item = localStorage.getItem(key);
+    if (item) {
+      try {
+        return JSON.parse(item);
+      } catch (e) {
+        console.error(`Erro ao parsear ${key} do localStorage:`, e);
+        return defaultValue;
+      }
+    }
+    return defaultValue;
+  };
 
-  const login = (userData) => {
+  const [user, setUser] = useState(parseLocalStorage('user', null));
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
+
+  const login = (userData, jwtToken) => {
+    console.log('Chamando login com:', { userData, jwtToken });
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData)); // Persistir login
+    setToken(jwtToken);
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('token', jwtToken);
   };
 
   const logout = () => {
+    console.log('Chamando logout');
     setUser(null);
+    setToken(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
 
+  // Memoiza o valor do contexto com dependências simples
+  const value = useMemo(() => ({ user, token, login, logout }), [user, token]);
+
+  console.log('Renderizando AuthProvider com:', { user, token });
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

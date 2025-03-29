@@ -1,15 +1,16 @@
-import axios from 'axios';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../styles/Register.css'; // CSS personalizado
+import { register } from '../services/api';
+import '../styles/Register.css';
 
 function Register() {
   const [form, setForm] = useState({
+    id: 0, // Adicionado
     name: '',
     email: '',
     password: '',
     cpf: '',
-    role: 'Usuário',
+    profile: 'Usuário', // Mudado de role para profile
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/register', form); // Ajuste o endpoint
+      await register(form);
       navigate('/login');
     } catch (err) {
       setError(err.response?.data?.message || 'Erro ao cadastrar. Verifique os dados.');
@@ -83,8 +84,8 @@ function Register() {
             />
           </div>
           <div className="input-group">
-            <label htmlFor="role">Perfil</label>
-            <select id="role" name="role" value={form.role} onChange={handleChange}>
+            <label htmlFor="profile">Perfil</label> {/* Mudado de role para profile */}
+            <select id="profile" name="profile" value={form.profile} onChange={handleChange}>
               <option value="Usuário">Usuário</option>
               <option value="Administrador">Administrador</option>
             </select>
