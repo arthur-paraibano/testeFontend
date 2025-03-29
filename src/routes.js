@@ -15,11 +15,11 @@ function AppRoutes() {
     <Routes>
       <Route
         path="/login"
-        element={!user ? <Login /> : <Navigate to={user.profile === 'Usuário' ? '/user-dashboard' : '/admin/users'} />}
+        element={!user ? <Login /> : <Navigate to={user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/user-dashboard'} />}
       />
       <Route
         path="/register"
-        element={!user ? <Register /> : <Navigate to={user.profile === 'Usuário' ? '/user-dashboard' : '/admin/users'} />}
+        element={!user ? <Register /> : <Navigate to={user.profile === 'ADMINISTRADOR' ? '/admin/users' : '/user-dashboard'} />}
       />
       <Route
         path="/home"
@@ -31,15 +31,11 @@ function AppRoutes() {
       />
       <Route
         path="/user-dashboard"
-        element={
-          user && user.profile === 'Usuário' ? <UserDashboard /> : <Navigate to="/login" />
-        }
+        element={user ? <UserDashboard /> : <Navigate to="/login" />}
       />
       <Route
         path="/admin/users"
-        element={
-          user && user.profile === 'Administrador' ? <AdminUsers /> : <Navigate to="/login" />
-        }
+        element={user ? <AdminUsers /> : <Navigate to="/login" />}
       />
       <Route path="/" element={<Navigate to="/login" />} />
     </Routes>

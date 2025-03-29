@@ -1,4 +1,3 @@
-import { jwtDecode } from 'jwt-decode'; // Mudança aqui: de "import jwtDecode" para "import { jwtDecode }"
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -21,23 +20,24 @@ function Login() {
     try {
       const res = await login(form);
       console.log('Resposta da API:', res.data);
-      const { token } = res.data; // Extrai apenas o token
-      const decodedToken = jwtDecode(token); // Usa jwtDecode como função
-      console.log('Token decodificado:', decodedToken);
+      const { token, id, name, email, cpf, profile, firstLogin } = res.data;
 
-      // Supondo que o profile esteja no payload do token como "profile" ou "role"
       const user = {
-        name: decodedToken.name || form.name, // Pega o nome do token ou do form
-        profile: decodedToken.profile || decodedToken.role, // Ajuste conforme o campo no token
+        id,
+        name,
+        email,
+        cpf,
+        profile,
+        firstLogin,
       };
 
-      loginContext(user, token); // Passa user e token separados para o contexto
+      loginContext(user, token);
 
       // Redireciona com base no profile
-      if (user.profile === 'USUÁRIO') {
-        navigate('/user-dashboard');
-      } else if (user.profile === 'ADMINISTRADOR') {
+      if (profile === 'ADMINISTRADOR') {
         navigate('/admin/users');
+      } else if (profile === 'USUÁRIO') {
+        navigate('/user-dashboard');
       } else {
         navigate('/home');
       }

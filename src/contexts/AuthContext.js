@@ -35,7 +35,6 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('token');
   };
 
-  // Memoiza o valor do contexto com dependências simples
   const value = useMemo(() => ({ user, token, login, logout }), [user, token]);
 
   console.log('Renderizando AuthProvider com:', { user, token });
