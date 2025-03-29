@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import '../styles/Login.css';
+
 
 function Login() {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ name: 'arthur', password: '12345' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -16,35 +18,50 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:8080/login', form); // Ajuste o endpoint
-      login(res.data); // Supondo que a API retorna os dados do usuário
+      const res = await axios.post('http://localhost:8080/auth/login', form); // Ajuste o endpoint
+      login(res.data); // Supondo que a API retorna { id, name, email, cpf, role }
       navigate('/home');
     } catch (err) {
-      setError('Credenciais inválidas.');
+      setError(err.response?.data?.message || 'Credenciais inválidas. Tente novamente.');
     }
   };
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="E-mail"
-          value={form.email}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Senha"
-          value={form.password}
-          onChange={handleChange}
-        />
-        <button type="submit">Entrar</button>
-      </form>
+      <div className="login-box">
+        <h2>Login</h2>
+        {error && <p className="error-message">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label htmlFor="name">Nome</label>
+            <input
+              type="name"
+              id="name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Digite seu e-mail"
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label htmlFor="password">Senha</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="Digite sua senha"
+              required
+            />
+          </div>
+          <button type="submit" className="btn-primary">Entrar</button>
+        </form>
+        <p className="register-link">
+          Não tem conta? <Link to="/register">Cadastre-se</Link>
+        </p>
+      </div>
     </div>
   );
 }
